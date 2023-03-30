@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'application'
 ]
 
 MIDDLEWARE = [
@@ -50,11 +52,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'BioInfoApp.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./../application/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
