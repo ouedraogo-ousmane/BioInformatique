@@ -89,7 +89,7 @@ def local_view(request):
         return render(request, 'local-align.html', {'post': False})
 
 
-def global_alignGap_view(request):
+def global_alignGap_Affine_view(request):
     gap_open = -2
     gap_closed = -0.5
     match_score = 1
@@ -104,6 +104,29 @@ def global_alignGap_view(request):
         return render(request, 'globalGap.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
     else:
         return render(request, 'form.html')
+
+
+def global_alignGap_lineaire_view(request):
+    gap_open = -2
+    gap_closed = -0.5
+    match_score = 1
+    mismatch_penalty = -1
+    if request.method == 'POST':
+        chaine = request.POST.get('chaine', '')
+        sequence = request.POST.get('sequence', '')
+        seq1 = Seq(chaine)
+        seq2 = Seq(sequence)
+        alignement = pairwise2.align.globalmx(
+            seq1, seq2, match_score, mismatch_penalty)
+        return render(request, 'globalGap.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+    else:
+        return render(request, 'form.html')
+
+
+def multiple_align(request):
+    if request.method == 'POST':
+        return render(request, 'test.html', {'resultat': request})
+    return render(request, 'formulaire.html')
 
 
 def clustal_Align_view(request):

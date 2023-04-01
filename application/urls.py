@@ -10,7 +10,10 @@ urlpatterns = [
     path('global/', views.global_view, name='global'),
     path('local/', views.local_view, name='local'),
     path('exacte/', views.needleman_wunsch_view, name='exacte'),
-    path('globalGap/', views.global_alignGap_view, name='globalGap'),
     path('clustal/', views.upload_file, name='clustal'),
     path('arbre/', views.dnd_view, name='arbre'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('globalGapAffine/', views.global_alignGap_Affine_view,
+         name='globalGapAffine'),
+    path('globalGapLineaire/', views.global_alignGap_lineaire_view,
+         name='globalGapLineaire'),
+]

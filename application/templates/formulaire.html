@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mon formulaire</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="chaine">Sequence 1:</label>
+        <input type="text" name="chaine" id="chaine">
+        <input type="submit" value="Ajouter">
+        <input type="submit" value="Convertir">
+    </form>
+</body>
+</html>
