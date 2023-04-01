@@ -125,10 +125,10 @@ def local_view(request):
 
 
 def global_alignGap_Affine_view(request):
-    """Cette vue permet d'afficher l'alignement global avec des modeles de 
+    """Cette vue permet d'afficher l'alignement global avec des modeles de
        gap affine
     Args:
-        request : la requete 
+        request : la requete
 
     Returns:
         _type_: _description_
@@ -166,26 +166,35 @@ def global_alignGap_lineaire_view(request):
     mismatch_penalty = -1
     if request.method == 'POST':
         sequence_1 = request.POST.get('sequence_1', '')
+        sequence_1 = sequence_1.strip().upper()
         sequence_2 = request.POST.get('sequence_2', '')
+        sequence_2 = sequence_2.strip().upper()
         match_score = request.POST.get('match_score', '')
+        match_score = int(match_score)
+
         mismatch_penalty = request.POST.get('mismatch_penalty', '')
-        seq1 = Seq(sequence_1)
-        seq2 = Seq(sequence_2)
-        alignement = pairwise2.align.globalmx(
-            seq1, seq2, match_score, mismatch_penalty)
-        return render(request, 'globalGap.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        mismatch_penalty = int(mismatch_penalty)
+        if(is_valid_dna(sequence_1) and is_valid_dna(sequence_2)):
+            seq1 = Seq(sequence_1)
+            seq2 = Seq(sequence_2)
+            alignement = pairwise2.align.globalmx(
+                seq1, seq2, match_score, mismatch_penalty)
+            return render(request, 'linear.html', {'post': False,
+                                                   'match': match_score, 'missmatch': mismatch_penalty,
+                                                   'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        return render(request, 'linear.html', {"error_check": True})
     else:
-        return render(request, 'form.html')
+        return render(request, 'linear.html', {'post': False})
 
 
 def multiple_align(request):
     seq = []
     if request.method == 'POST':
-        if request.POST.get('subject')=='Ajouter':
+        if request.POST.get('subject') == 'Ajouter':
             sequence_1 = request.POST.get('sequence_1', '')
             seq.append(sequence_1)
             return render(request, 'test.html', {'resultat': seq})
-        if request.POST.get('subject')=='Convertir':
+        if request.POST.get('subject') == 'Convertir':
             return render(request, 'test.html', {'resultat': "Hello dear family"})
     return render(request, 'formulaire.html')
 
