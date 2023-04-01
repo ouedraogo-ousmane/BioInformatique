@@ -6,17 +6,52 @@ from Bio import pairwise2,SeqIO
 from Bio.Align.Applications import ClustalwCommandline
 import os
 from django.conf import settings
-# Create your views here.
-def majuscule_view(request):
+from django.core.files.storage import FileSystemStorage
+from Bio import Phylo
+
+from django import forms
+from django.shortcuts import render
+from io import StringIO
+
+class DndForm(forms.Form):
+    file = forms.FileField()
+    
+def dnd_view(request):
     if request.method == 'POST':
-        chaine = request.POST.get('chaine', '')
-        sequence = request.POST.get('sequence', '')
-        seq1 = Seq(chaine)
-        seq2 = Seq(sequence)
-        alignement = pairwise2.align.globalxx(seq1,seq2)
-        return render(request, 'majuscule.html', {'chaine_maj': alignement, 'chaine': seq2.complement()})
+        form = DndForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Récupérer le fichier DND soumis
+            file = request.FILES['file']
+            # Lire le contenu du fichier
+            content = file.read().decode('utf-8')
+            # Traiter le contenu pour générer l'arbre WPGMA
+            tree = Phylo.read(StringIO(content), 'newick')
+            # Rendre l'arbre WPGMA à l'aide d'un template
+            return render(request, 'tree.html', {'tree': tree})
     else:
-        return render(request, 'form.html')
+        form = DndForm()
+    return render(request, 'upload1.html', {'form': form})
+    
+
+
+
+def upload_file(request):
+    if request.method == 'POST' and request.FILES['fasta']:
+        fasta_file = request.FILES['fasta']
+        fs = FileSystemStorage()
+        filename = fs.save(fasta_file.name, fasta_file)
+        file_path = fs.path(filename)
+
+        # Appel de Clustal pour effectuer l'alignement
+        cline = ClustalwCommandline("ClustalW2", infile=file_path)
+        stdout, stderr = cline()
+
+        with open(file_path.replace('.fasta', '.aln'), 'r') as aln_file:
+            aln_content = aln_file.read()
+
+        return render(request, 'clustal.html', {'alignment': aln_content})
+
+    return render(request, 'upload.html')
 
     """Cette methode permet de determiner l'alignement globale ==
     de deux sequences seq1 et seq2
@@ -75,7 +110,16 @@ def clustal_Align_view(request):
         return render(request, 'form1.html')
 
 def arbre_WPGMA(request):
-    pass
+   
+    if request.method == 'POST':
+        fichier = request.POST.get('fichier', '')
+        chemin_rel = os.path.join(settings.MEDIA_ROOT, fichier)
+        chemin_abs = os.path.abspath(chemin_rel)
+        tree = Phylo.read(chemin_abs, "newick")
+        
+        return render(request, 'clustal.html', {'resultat':Phylo.draw_ascii(tree)})
+    else:
+        return render(request, 'form1.html')
 
 def needleman_wunsch_view(request):
 

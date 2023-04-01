@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Arbre WPGMA</h1>
+  <div id="mytree">
+    {{tree}}
+  </div>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/phylocanvas.min.js"></script>
+  <script type="text/javascript">
+    // Générer l'arbre WPGMA à l'aide de Biopython
+    var tree = {{ tree | safe }};
+    // Afficher l'arbre à l'aide de Phylocanvas
+    var canvas = new Smits.PhyloCanvas(
+      tree, "mytree", 500, 500);
+  </script>
+{% endblock %}
