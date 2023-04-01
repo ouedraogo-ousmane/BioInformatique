@@ -110,7 +110,7 @@ def global_alignGap_lineaire_view(request):
         return render(request, 'form.html')
     
 def multiple_align(request):
-    if request.method == 'POST':
+    if request.POST['submit'] == 'Ajouter':
         return render(request, 'test.html', {'resultat':request})
     return render(request, 'formulaire.html')
 
