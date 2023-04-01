@@ -19,6 +19,12 @@ class DndForm(forms.Form):
     file = forms.FileField()
 # Create your views here.
 
+# Vérifie si la chaîne passée en paramètre ne contient que des nucléotides d'ADN
+
+
+def is_valid_dna(seq):
+    return bool(re.match('^[ATCG]*$', seq))
+
 
 def home_view(request):
     return render(request, 'index.html')
@@ -57,37 +63,14 @@ def clustal_Align_view(request):
 
         return render(request, 'clustal.html', {'alignment': aln_content})
 
-    return render(request, 'upload.html')
+    return render(request, 'clustal.html')
 
     """Cette methode permet de determiner l'alignement globale ==
     de deux sequences seq1 et seq2
     """
 
 
-# Vérifie si la chaîne passée en paramètre ne contient que des nucléotides d'ADN
-def is_valid_dna(seq):
-    return bool(re.match('^[ATCG]*$', seq))
-
 # Demande à l'utilisateur de saisir les deux séquences
-# while True:
-#     seq1 = input("Veuillez saisir la première séquence d'ADN : ")
-#     if is_valid_dna(seq1):
-#         break
-#     print("La séquence saisie contient des caractères non-valides. Veuillez ne saisir que des nucléotides d'ADN (A, T, C ou G)")
-
-# while True:
-#     seq2 = input("Veuillez saisir la deuxième séquence d'ADN : ")
-#     if is_valid_dna(seq2):
-#         break
-#     print("La séquence saisie contient des caractères non-valides. Veuillez ne saisir que des nucléotides d'ADN (A, T, C ou G)")
-
-# # Effectue l'alignement local des deux séquences
-# align1, align2 = smith_waterman(seq1, seq2)
-
-# # Affiche les séquences alignées
-# print(align1)
-# print(align2)
-
 
 def global_view(request):
     if request.method == 'POST':
@@ -155,7 +138,6 @@ def global_alignGap_Affine_view(request):
 
         gap_closed = request.POST.get('gap_closed', '')
         gap_closed = float(gap_closed)
-        print(gap_closed, gap_open)
 
         seq1 = Seq(sequence_1)
         seq2 = Seq(sequence_2)
@@ -254,10 +236,14 @@ def needleman_wunsch_view(request):
     match_score = 1
     mismatch_penalty = -1
     if request.method == 'POST':
-        chaine = request.POST.get('chaine', '')
-        sequence = request.POST.get('sequence', '')
-        s1 = Seq(chaine)
-        s2 = Seq(sequence)
+        # chaine = request.POST.get('chaine', '')
+        # sequence = request.POST.get('sequence', '')
+        sequence_1 = request.POST.get('sequence_1', '')
+        sequence_1 = sequence_1.strip().upper()
+        sequence_2 = request.POST.get('sequence_2', '')
+        sequence_2 = sequence_2.strip().upper()
+        s1 = Seq(sequence_1)
+        s2 = Seq(sequence_2)
         # Création de la matrice de scores
         m, n = len(s1), len(s2)
         score_matrix = np.zeros((m+1, n+1))
@@ -310,4 +296,4 @@ def needleman_wunsch_view(request):
         # return align1, align2
         return render(request, 'exact.html', {'seq1': s1, 'seq2': s1, 'alignement1': align1, 'alignement2': align2})
     else:
-        return render(request, 'form.html')
+        return render(request, 'exact.html')
