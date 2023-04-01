@@ -22,3 +22,9 @@
     width: 100%;
     margin-top: 16px;
 }
+
+.error{
+    height: 45px;
+    width: 60%; 
+    margin: 0px auto;
+}
