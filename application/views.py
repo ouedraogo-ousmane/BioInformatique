@@ -11,8 +11,8 @@ from django.core.files.storage import FileSystemStorage
 from Bio import Phylo
 
 from django import forms
-from django.shortcuts import render
 from io import StringIO
+import re
 
 
 class DndForm(forms.Form):
@@ -64,27 +64,62 @@ def clustal_Align_view(request):
     """
 
 
+# Vérifie si la chaîne passée en paramètre ne contient que des nucléotides d'ADN
+def is_valid_dna(seq):
+    return bool(re.match('^[ATCG]*$', seq))
+
+# Demande à l'utilisateur de saisir les deux séquences
+# while True:
+#     seq1 = input("Veuillez saisir la première séquence d'ADN : ")
+#     if is_valid_dna(seq1):
+#         break
+#     print("La séquence saisie contient des caractères non-valides. Veuillez ne saisir que des nucléotides d'ADN (A, T, C ou G)")
+
+# while True:
+#     seq2 = input("Veuillez saisir la deuxième séquence d'ADN : ")
+#     if is_valid_dna(seq2):
+#         break
+#     print("La séquence saisie contient des caractères non-valides. Veuillez ne saisir que des nucléotides d'ADN (A, T, C ou G)")
+
+# # Effectue l'alignement local des deux séquences
+# align1, align2 = smith_waterman(seq1, seq2)
+
+# # Affiche les séquences alignées
+# print(align1)
+# print(align2)
+
+
 def global_view(request):
     if request.method == 'POST':
         sequence_1 = request.POST.get('sequence_1', '')
+        sequence_1 = sequence_1.strip().upper()
+
         sequence_2 = request.POST.get('sequence_2', '')
-        seq1 = Seq(sequence_1)
-        seq2 = Seq(sequence_2)
-        alignement = pairwise2.align.globalxx(seq1, seq2)
-        return render(request, 'global-align.html', {'post': True, 'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        sequence_2 = sequence_2.strip().upper()
+        if(is_valid_dna(sequence_1) and is_valid_dna(sequence_2)):
+
+            seq1 = Seq(sequence_1)
+            seq2 = Seq(sequence_2)
+            alignement = pairwise2.align.globalxx(seq1, seq2)
+            return render(request, 'global-align.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        return render(request, 'global-align.html', {"error_check": True})
     else:
-        return render(request, 'global-align.html', {'post': False})
+        return render(request, 'global-align.html')
 
 
 def local_view(request):
     if request.method == 'POST':
         sequence_1 = request.POST.get('sequence_1', '')
+        sequence_1 = sequence_1.strip().upper()
+
         sequence_2 = request.POST.get('sequence_2', '')
-        seq1 = Seq(sequence_1)
-        seq2 = Seq(sequence_2)
-        alignement = pairwise2.align.localxx(seq1, seq2)
-        print(alignement)
-        return render(request, 'local-align.html', {'post': True, 'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        sequence_2 = sequence_2.strip().upper()
+        if(is_valid_dna(sequence_1) and is_valid_dna(sequence_2)):
+            seq1 = Seq(sequence_1)
+            seq2 = Seq(sequence_2)
+            alignement = pairwise2.align.localxx(seq1, seq2)
+            return render(request, 'global-align.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        return render(request, 'global-align.html', {"error_check": True})
     else:
         return render(request, 'local-align.html', {'post': False})
 
