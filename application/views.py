@@ -133,24 +133,45 @@ def global_alignGap_Affine_view(request):
     Returns:
         _type_: _description_
     """
-    gap_open = -2
-    gap_closed = -0.5
-    match_score = 1
-    mismatch_penalty = -1
+    # gap_open = -2
+    # gap_closed = -0.5
+    # match_score = 1
+    # mismatch_penalty = -1
     if request.method == 'POST':
         sequence_1 = request.POST.get('sequence_1', '')
+        sequence_1 = sequence_1.strip().upper()
+
         sequence_2 = request.POST.get('sequence_2', '')
+        sequence_2 = sequence_2.strip().upper()
+
         match_score = request.POST.get('match_score', '')
+        match_score = int(match_score)
+
         mismatch_penalty = request.POST.get('mismatch_penalty', '')
+        mismatch_penalty = int(mismatch_penalty)
+
         gap_open = request.POST.get('gap_open', '')
+        gap_open = float(gap_open)
+
         gap_closed = request.POST.get('gap_closed', '')
+        gap_closed = float(gap_closed)
+        print(gap_closed, gap_open)
+
         seq1 = Seq(sequence_1)
         seq2 = Seq(sequence_2)
-        alignement = pairwise2.align.globalms(
-            seq1, seq2, match_score, mismatch_penalty, gap_open, gap_closed)
-        return render(request, 'globalGap.html', {'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+
+        if(is_valid_dna(sequence_1) and is_valid_dna(sequence_2)):
+            seq1 = Seq(sequence_1)
+            seq2 = Seq(sequence_2)
+            alignement = pairwise2.align.globalms(
+                seq1, seq2, match_score, mismatch_penalty, gap_open, gap_closed)
+            return render(request, 'affine.html', {'post': False,
+                                                   'match': match_score, 'missmatch': mismatch_penalty,
+                                                   'gap_open': gap_open, 'gap_closed': gap_closed,
+                                                   'seq1': seq1, 'seq2': seq2, 'resultat': alignement})
+        return render(request, 'affine.html', {"error_check": True})
     else:
-        return render(request, 'form.html')
+        return render(request, 'affine.html', {'post': False})
 
 
 def global_alignGap_lineaire_view(request):
@@ -162,8 +183,8 @@ def global_alignGap_lineaire_view(request):
     Returns:
         _type_: _description_
     """
-    match_score = 1
-    mismatch_penalty = -1
+    # match_score = 1
+    # mismatch_penalty = -1
     if request.method == 'POST':
         sequence_1 = request.POST.get('sequence_1', '')
         sequence_1 = sequence_1.strip().upper()
