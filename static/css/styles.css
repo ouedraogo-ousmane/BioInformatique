@@ -1,0 +1,24 @@
+.header{
+    background-color: aquamarine;
+}
+
+
+.local-input{
+    height: 100vh;
+  border-right-style: solid;
+  border-right-color: #333;
+}
+
+.local-form{
+    
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.local-form input{
+    width: 100%;
+    margin-top: 16px;
+}

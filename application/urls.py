@@ -1,16 +1,20 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import (global_view,local_view,
-needleman_wunsch_view,multiple_align,global_alignGap_Affine_view,clustal_Align_view,global_alignGap_lineaire_view,dnd_view,upload_file,arbre_WPGMA)
+from . import views
 
 urlpatterns = [
-    path('global/', global_view, name='global'),
-    path('local/', local_view, name='local'),
-    path('multiple/', multiple_align, name='multiple'),
-    path('exacte/', needleman_wunsch_view, name='exacte'),
-    path('globalGapAffine/', global_alignGap_Affine_view, name='globalGapAffine'),
-    path('globalGapLineaire/', global_alignGap_lineaire_view, name='globalGapLineaire'),
-    path('clustal/', upload_file, name='clustal'),
-    path('arbre/', dnd_view, name='arbre'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', views.home_view, name='home'),
+    path('linear-gap/', views.global_view, name='linear'),
+    path('affine-gap/', views.global_view, name='affine'),
+    path('multiple/', views.multiple_align, name='multiple'),
+    path('global/', views.global_view, name='global'),
+    path('local/', views.local_view, name='local'),
+    path('exacte/', views.needleman_wunsch_view, name='exacte'),
+    path('clustal/', views.clustal_Align_view, name='clustal'),
+    path('arbre/', views.dnd_view, name='arbre'),
+    path('globalGapAffine/', views.global_alignGap_Affine_view,
+         name='globalGapAffine'),
+    path('globalGapLineaire/', views.global_alignGap_lineaire_view,
+         name='globalGapLineaire'),
+]

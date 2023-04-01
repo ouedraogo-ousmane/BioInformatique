@@ -8,8 +8,11 @@
         {% csrf_token %}
         <label for="chaine">Sequence 1:</label>
         <input type="text" name="chaine" id="chaine">
-        <input type="submit" value="Ajouter">
-        <input type="submit" value="Convertir">
+        
+        {% comment %} <input type="submit" name="Ajouter" value="Ajouter">
+        <input type="submit" name="Convertir" value="Convertir"> {% endcomment %}
+        <button name="Ajouter" type="submit" value="Ajouter">Ajouter</button>
+        <button name="Convertir" type="submit" value="Convertir">Convertir</button>
     </form>
 </body>
 </html>
