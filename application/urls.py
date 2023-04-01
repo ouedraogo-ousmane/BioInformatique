@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.home_view, name='home'),
+    path('', views.local_view, name='home'),
     path('linear-gap/', views.global_alignGap_lineaire_view, name='linear'),
     path('affine-gap/', views.global_alignGap_Affine_view, name='affine'),
     path('global/', views.global_view, name='global'),
