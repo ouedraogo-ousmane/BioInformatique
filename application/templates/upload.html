@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mon Alignement local</title>
+</head>
+<body>
+    <h1>Upload a FASTA file</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="fasta">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

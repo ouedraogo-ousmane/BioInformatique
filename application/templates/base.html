@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/">À propos</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <p>Copyright &copy; {{ year }} MonApplication.
+        Tous droits réservés.</p>
+    </footer>
+    <script src="{{ STATIC_URL }}js/script.js"></script>
+  </body>
+</html>
